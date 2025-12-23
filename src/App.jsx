@@ -14,7 +14,7 @@ const PageTransition = ({ children }) => {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 1.02 }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }} // Custom "silk" ease
-      style={{ width: '100%', height: '100%', position: 'absolute' }}
+      style={{ width: '100%', minHeight: '100vh' }}
     >
       {children}
     </motion.div>
@@ -39,7 +39,7 @@ const AnimatedRoutes = () => {
 function App() {
   return (
     <Router>
-      <div className="app-container" style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden' }}>
+      <div className="app-container" style={{ minHeight: '100vh' }}>
         <Navigation />
         <AnimatedRoutes />
       </div>
