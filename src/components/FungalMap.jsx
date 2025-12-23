@@ -158,9 +158,8 @@ const FungalMap = () => {
         ctx.stroke();
     };
 
-    const updatePulses = () => {
-        setNourishPulses(prev => prev.map(p => ({ ...p, progress: p.progress + 0.02 })).filter(p => p.progress < 1));
-    };
+
+    // Removed updatePulses - will handle pulse updates inside render loop with ref
 
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -177,7 +176,9 @@ const FungalMap = () => {
 
         const render = (time) => {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            updatePulses();
+
+            // Update pulses in-place (manual mutation for performance)
+            nourishPulses.forEach(p => p.progress += 0.02);
 
             // 1. Draw Global Hyphae
             nodes.forEach((node, i) => {
@@ -309,6 +310,11 @@ const FungalMap = () => {
         const mouseX = e.clientX - rect.left;
         const mouseY = e.clientY - rect.top;
 
+        // Don't handle clicks in navigation area (bottom 100px)
+        if (mouseY > rect.height - 100) {
+            return;
+        }
+
         const clickedNode = nodes.find(node => {
             const nx = (node.x / 100) * rect.width;
             const ny = (node.y / 100) * rect.height;
@@ -366,7 +372,7 @@ const FungalMap = () => {
         }} ref={containerRef}>
 
             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', backdropFilter: 'invert(90%) hue-rotate(180deg) brightness(0.4) contrast(1.2)', pointerEvents: 'none' }}></div>
-            <canvas ref={canvasRef} onClick={handleCanvasClick} style={{ position: 'absolute', top: 0, left: 0, cursor: 'crosshair', zIndex: 5 }} />
+            <canvas ref={canvasRef} onClick={handleCanvasClick} style={{ position: 'absolute', top: 0, left: 0, cursor: 'crosshair', zIndex: 5, width: '100%', height: 'calc(100% - 120px)' }} />
 
             <div className="glass-panel" style={{ position: 'absolute', top: '2rem', left: '2rem', width: '280px', maxHeight: '60vh', overflowY: 'hidden', display: 'flex', flexDirection: 'column', zIndex: 10 }}>
                 <div style={{ padding: '1rem', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>

@@ -1,48 +1,94 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
 
 const SpeciesCard = ({ species }) => {
+    const [isLoaded, setIsLoaded] = useState(false);
+
     return (
-        <div className="glass-panel" style={{
-            overflow: 'hidden',
-            transition: 'transform 0.3s var(--ease-organic)',
-            cursor: 'pointer',
-            background: 'rgba(26, 38, 31, 0.6)'
-        }}
-            onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-5px)';
-                e.currentTarget.querySelector('.shine').style.opacity = 0.5;
+        <motion.div
+            className="glass-panel"
+            whileHover="hover"
+            initial="idle"
+            style={{
+                overflow: 'hidden',
+                cursor: 'pointer',
+                background: 'rgba(26, 38, 31, 0.6)',
+                position: 'relative'
             }}
-            onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.querySelector('.shine').style.opacity = 0;
+            variants={{
+                idle: { y: 0 },
+                hover: { y: -5 }
             }}
+            transition={{ type: 'spring', stiffness: 300, damping: 20 }}
         >
             <div style={{ position: 'relative', height: '200px', overflow: 'hidden' }}>
-                <img
+                <motion.img
                     src={species.image}
                     alt={species.name}
+                    initial={{ opacity: 0, scale: 1.1 }}
+                    animate={{
+                        opacity: isLoaded ? 1 : 0,
+                        scale: isLoaded ? 1 : 1.1
+                    }}
+                    transition={{ duration: 0.7, ease: "easeOut" }}
+                    onLoad={() => setIsLoaded(true)}
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                 />
-                {/* Shine effect overlay */}
-                <div className="shine" style={{
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    width: '100%',
-                    height: '100%',
-                    background: 'linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.1) 50%, transparent 70%)',
-                    opacity: 0,
-                    transition: 'opacity 0.5s',
-                    pointerEvents: 'none'
-                }}></div>
+
+                {/* Scan Effect Overlay */}
+                <motion.div
+                    variants={{
+                        idle: { top: '-10%', opacity: 0 },
+                        hover: {
+                            top: '120%',
+                            opacity: 1,
+                            transition: {
+                                duration: 1.5,
+                                ease: "linear",
+                                repeat: Infinity
+                            }
+                        }
+                    }}
+                    style={{
+                        position: 'absolute',
+                        left: 0,
+                        width: '100%',
+                        height: '10px',
+                        background: 'linear-gradient(to bottom, transparent, var(--color-accent-ghost), transparent)',
+                        boxShadow: '0 0 15px var(--color-accent-ghost)',
+                        zIndex: 2,
+                        pointerEvents: 'none'
+                    }}
+                />
+
+                {/* Scan Grid Overlay (Optional sci-fi feel) */}
+                <motion.div
+                    variants={{
+                        idle: { opacity: 0 },
+                        hover: { opacity: 0.2 }
+                    }}
+                    style={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        width: '100%',
+                        height: '100%',
+                        background: 'linear-gradient(rgba(184, 242, 230, 0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(184, 242, 230, 0.1) 1px, transparent 1px)',
+                        backgroundSize: '20px 20px',
+                        zIndex: 1,
+                        pointerEvents: 'none'
+                    }}
+                />
+
                 <div style={{
                     position: 'absolute',
                     bottom: 0,
                     left: 0,
                     width: '100%',
-                    background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)',
+                    background: 'linear-gradient(to top, rgba(0,0,0,0.9), transparent)',
                     padding: '1rem',
-                    paddingTop: '2rem'
+                    paddingTop: '2rem',
+                    zIndex: 3
                 }}>
                     <span style={{
                         fontSize: '0.7rem',
@@ -63,7 +109,7 @@ const SpeciesCard = ({ species }) => {
                     {species.description}
                 </p>
             </div>
-        </div>
+        </motion.div>
     );
 };
 import { categories } from '../utils/mockData';
