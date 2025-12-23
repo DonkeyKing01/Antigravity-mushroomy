@@ -60,7 +60,6 @@ const CuratedContent = () => {
             maxWidth: '1200px',
             margin: '0 auto',
             display: 'grid',
-            gridTemplateColumns: 'repea(auto-fit, minmax(300px, 1fr))', // Typo fix: repeat
             gridTemplateColumns: 'minmax(300px, 2fr) minmax(250px, 1fr)',
             gap: 'var(--spacing-lg)',
             alignItems: 'start'
